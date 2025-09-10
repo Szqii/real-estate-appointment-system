@@ -26,4 +26,3 @@ function compareDateToToday(dateString) {
 }
 
 export default compareDateToToday;
-
