@@ -1,7 +1,7 @@
 <template>
   <div
-      class="w-10 h-10 flex items-center justify-center rounded-full text-black text-sm font-semibold select-none border border-[#F9F9F9]"
-      :class="bgClass"
+      :style="{ backgroundColor: bgColor, color: getTextColor(bgColor) }"
+      class="w-10 h-10 flex items-center justify-center rounded-full text-sm font-semibold select-none border border-[#F9F9F9]"
   >
     {{ displayText }}
   </div>
@@ -15,27 +15,11 @@ const props = defineProps({
     type: [String, Number],
     required: true,
   },
+  bgColor: {
+    type: String,
+    default: "#E0E0E0",
+  },
 });
-
-const bgColors = [
-  "bg-red-500",
-  "bg-blue-500",
-  "bg-green-500",
-  "bg-yellow-500",
-  "bg-purple-500",
-  "bg-pink-500",
-  "bg-indigo-500",
-  "bg-teal-500",
-  "bg-orange-500",
-];
-
-function stringToHash(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return Math.abs(hash);
-}
 
 const displayText = computed(() => {
   if (typeof props.name === "number") {
@@ -48,11 +32,12 @@ const displayText = computed(() => {
   return (first + last).toUpperCase();
 });
 
-const bgClass = computed(() => {
-  if (typeof props.name === "number") {
-    return "bg-gray-300";
-  }
-  const hash = stringToHash(props.name);
-  return bgColors[hash % bgColors.length];
-});
+function getTextColor(bgColor) {
+  const r = parseInt(bgColor.slice(1, 3), 16);
+  const g = parseInt(bgColor.slice(3, 5), 16);
+  const b = parseInt(bgColor.slice(5, 7), 16);
+
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 155 ? '#000000' : '#FFFFFF';
+}
 </script>
