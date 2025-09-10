@@ -10,6 +10,7 @@
     </div>
 
     <div class="flex-1 text-white">
+      <FontAwesomeIcon :icon="faClock"/>
       {{ formatDate(appointmentDate) }}
     </div>
   </div>
@@ -17,23 +18,14 @@
 
 <script setup>
 import formatDate from "@/utils/formatDate.js";
-import compareDateToToday from "@/utils/compareDateToToday.js";
-import {computed} from "vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {faClock} from "@fortawesome/free-solid-svg-icons";
 
 const props = defineProps({
   appointmentDate: String,
-  isCancelled: Boolean,
+  status: String,
+  left: [String, Number, null],
 });
-
-const statusAndLeftObj = computed(() => {
-  if (props.isCancelled) {
-    return {status: 'Cancelled', left: ''};
-  }
-  return compareDateToToday(props.appointmentDate);
-});
-
-const status = computed(() => statusAndLeftObj.value.status);
-const left = computed(() => statusAndLeftObj.value.left);
 
 const statusColors = {
   'Cancelled': 'text-red-500',
