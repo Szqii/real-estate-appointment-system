@@ -1,6 +1,6 @@
 import formatPhoneNumber from './formatPhoneNumber';
 
-function normalizeAppointment(apiData) {
+function normalizeAppointment(apiData, agentMap) {
     const contacts = (apiData.fields.contact_id || []).map((id, idx) => ({
         id,
         name: `${apiData.fields.contact_name[idx]} ${apiData.fields.contact_surname[idx]}`,
@@ -8,10 +8,17 @@ function normalizeAppointment(apiData) {
         phone: apiData.fields.contact_phone ? formatPhoneNumber(apiData.fields.contact_phone[idx]) : ''
     }));
 
-    const agents = (apiData.fields.agent_id || []).map((id, idx) => ({
-        id,
-        name: `${apiData.fields.agent_name[idx]} ${apiData.fields.agent_surname[idx]}`
-    }));
+    const agents = (apiData.fields.agent_id || []).map((id) => {
+        const agentDetails = agentMap?.get(id) || {};
+        return {
+            id,
+            name: `${agentDetails.fields.agent_name} ${agentDetails.fields.agent_surname}`,
+            createdTime: agentDetails.createdTime || null,
+            appointments: agentDetails.fields.appointments,
+            color: agentDetails.fields.color || '#000000',
+            number: agentDetails.fields.number || null
+        }
+    });
 
     return {
         id: apiData.id,
