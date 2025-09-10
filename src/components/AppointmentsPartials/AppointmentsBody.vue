@@ -4,7 +4,7 @@
     <div v-else-if="error" class="error-message">
       <p>Error loading appointments: {{ error }}</p>
     </div>
-    <div v-else class="px-2">
+    <div v-else>
       <h2>Total Appointments: {{ totalAppointments }}</h2>
       <div v-for="appointment in appointments" :key="appointment.id"
            class="flex justify-between items-center px-6 py-2 border rounded-xl mb-2 odd:bg-[#EDF0F5] even:bg-[#F9F9F9]">
