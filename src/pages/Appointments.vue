@@ -1,8 +1,9 @@
 <template>
   <div>
-    <AppointmentsHeader/>
-    <AppointmentsBody :appointments="appointments" :totalAppointments="totalAppointments" :loading="loading"
+    <AppointmentsHeader :agents="agents"/>
+    <AppointmentsBody :appointments="paginatedAppointments" :totalAppointments="totalAppointments" :loading="loading"
                       :error="error"/>
+    <AppointmentsFooter/>
   </div>
 </template>
 
@@ -11,9 +12,21 @@ import {storeToRefs} from "pinia";
 import {useAppointmentsStore} from "@/stores/appointments.js";
 import AppointmentsHeader from "@/components/AppointmentsPartials/AppointmentsHeader.vue";
 import AppointmentsBody from "@/components/AppointmentsPartials/AppointmentsBody.vue";
+import AppointmentsFooter from "@/components/AppointmentsPartials/AppointmentsFooter.vue";
+import {useAgentsStore} from "@/stores/agents.js";
 
 const appointmentStore = useAppointmentsStore();
-const {appointments, totalAppointments, loading, error} = storeToRefs(appointmentStore);
+const {
+  appointments,
+  paginatedAppointments,
+  totalAppointments,
+  loading,
+  error
+} = storeToRefs(appointmentStore);
+
+const agentsStore = useAgentsStore();
+const {agents} = storeToRefs(agentsStore);
+
 </script>
 
 <style scoped></style>

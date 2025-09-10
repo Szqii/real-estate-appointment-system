@@ -1,10 +1,25 @@
 import instance from "@/services/index.js";
-import normalizeAppointment from "@/utils/normalizeAppointmentData.js";
 
 export const getAppointments = async (params) => {
+    let allAppointments = [];
+    let offset = null;
+
     try {
-        const response = await instance.get('/appointments', {params});
-        return response.data.records.map(normalizeAppointment);
+        do {
+            const response = await instance.get("/appointments", {
+                params: {
+                    ...params,
+                    pageSize: 100,
+                    offset,
+                },
+            });
+
+            const {records, offset: newOffset} = response.data;
+            allAppointments = [...allAppointments, ...records];
+            offset = newOffset;
+
+        } while (offset);
+        return allAppointments
     } catch (error) {
         console.error('Error fetching appointments:', error);
         throw error;
