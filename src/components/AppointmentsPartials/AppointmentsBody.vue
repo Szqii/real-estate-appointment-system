@@ -7,11 +7,15 @@
     <div v-else class="flex flex-col gap-8">
       <div class="flex items-center justify-between">
         <span class="font-bold">{{ appointmentsLength }} appointments found.</span>
+
         <button type="button"
+                @click="openModal"
                 class="flex items-center gap-2 text-white bg-primary hover:text-primary hover:bg-transparent border border-primary focus:outline-none font-medium rounded-lg text-sm px-6 py-3 text-center transition duration-200">
           <FontAwesomeIcon :icon="faCalendarPlus" class="me-2 text-lg"/>
           Create Appointment
         </button>
+        <CreateAppointmentModal :isModalOpen="isModalOpen" @close="closeModal"/>
+
       </div>
       <div>
         <div v-for="appointment in appointments" :key="appointment.id"
@@ -27,6 +31,9 @@ import Loading from "@/components/Loading.vue";
 import AppointmentCard from "@/components/AppointmentsPartials/AppointmentCard.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {faCalendarPlus} from "@fortawesome/free-solid-svg-icons";
+import {useAppointmentsStore} from "@/stores/appointments.js";
+import CreateAppointmentModal from "@/components/CreateAppointmentModal.vue";
+import {ref} from "vue";
 
 interface Appointment {
   id: number;
@@ -40,4 +47,20 @@ defineProps<{
   loading: boolean;
   error: string | null;
 }>();
+
+const isModalOpen = ref(false);
+
+const store = useAppointmentsStore();
+
+const openModal = () => {
+  if (!isModalOpen.value) {
+    isModalOpen.value = true;
+  }
+}
+
+const closeModal = () => {
+  if (isModalOpen.value) {
+    isModalOpen.value = false;
+  }
+}
 </script>

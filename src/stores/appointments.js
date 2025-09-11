@@ -4,6 +4,7 @@ import {getAppointments} from "@/services/getAppointments.js";
 import compareDateToToday from "@/utils/compareDateToToday.js";
 import {useAgentsStore} from "@/stores/agents.js";
 import normalizeAppointment from "@/utils/normalizeAppointmentData.js";
+import {postAppointment} from "@/services/postAppointment.js";
 
 export const useAppointmentsStore = defineStore('appointments', () => {
     const agentsStore = useAgentsStore()
@@ -40,20 +41,33 @@ export const useAppointmentsStore = defineStore('appointments', () => {
             )
 
             const search = filters.value.search || ""
-            const searchMatch = !search || Object.values(app).some(val => {
-                if (typeof val === "string" || typeof val === "number") {
-                    return val.toString().includes(search)
-                }
-                if (Array.isArray(val)) {
-                    return val.some(item => Object.values(item).some(v => v?.toString().includes(search)))
-                }
-                return false
-            })
-
-
+            const searchMatch = !search || (
+                app.appointmentAddress?.includes(search) ||
+                app.contacts?.some(c => {
+                    const contact = c._custom?.value || c
+                    return [
+                        contact?.name,
+                        contact?.email,
+                        contact?.phone
+                    ].some(val => val?.toString().includes(search))
+                })
+            )
+            
             return statusMatch && agentMatch && dateMatch && searchMatch
         })
     })
+
+    const uniqueContacts = computed(() => {
+        const map = new Map();
+        appointments.value.forEach(app => {
+            app.contacts.forEach(contact => {
+                if (!map.has(contact.id)) {
+                    map.set(contact.id, contact);
+                }
+            });
+        });
+        return Array.from(map.values());
+    });
 
     const totalAppointments = computed(() => filteredAppointments.value.length)
     const pageSize = 10
@@ -87,6 +101,14 @@ export const useAppointmentsStore = defineStore('appointments', () => {
         }
     }
 
+    const createAppointment = async (appointmentData) => {
+        const data = await postAppointment(appointmentData)
+        const agentMap = new Map(agentsStore.agents.map(a => [a.id, a]))
+        const newAppointment = normalizeAppointment(data, agentMap)
+        setAppointments([newAppointment, ..._appointments.value])
+        return newAppointment
+    }
+
     const setAppointments = (data) => {
         _appointments.value = data
     }
@@ -114,6 +136,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
         appointments,
         filteredAppointments,
         paginatedAppointments,
+        uniqueContacts,
         totalAppointments,
         totalPages,
         currentPage,
@@ -123,6 +146,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
 
         // Actions
         fetchAppointments,
+        createAppointment,
         setAppointments,
         setLoading,
         setError,
