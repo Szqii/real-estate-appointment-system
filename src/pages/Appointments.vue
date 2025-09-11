@@ -1,7 +1,8 @@
 <template>
   <div>
     <AppointmentsHeader :agents="agents"/>
-    <AppointmentsBody :appointments="paginatedAppointments" :totalAppointments="totalAppointments" :loading="loading"
+    <AppointmentsBody :appointments="paginatedAppointments" :appointmentsLength="filteredAppointments.length"
+                      :loading="loading"
                       :error="error"/>
     <AppointmentsFooter/>
   </div>
@@ -17,9 +18,8 @@ import {useAgentsStore} from "@/stores/agents.js";
 
 const appointmentStore = useAppointmentsStore();
 const {
-  appointments,
   paginatedAppointments,
-  totalAppointments,
+  filteredAppointments,
   loading,
   error
 } = storeToRefs(appointmentStore);
