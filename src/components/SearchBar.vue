@@ -6,7 +6,7 @@
     </div>
     <input type="search" id="default-search"
            v-model="searchQuery"
-           class="block w-full py-2 ps-10 pe-2 text-sm font-medium text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary focus:border-primary"
+           class="block w-full py-2 ps-10 pe-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-primary focus:border-primary"
            placeholder="Search..." required/>
   </div>
 </template>
