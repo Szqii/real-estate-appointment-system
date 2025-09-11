@@ -12,7 +12,7 @@ function compareDateToToday(dateString) {
     const diffHours = Math.floor(diffMinutes / 60);
     const diffDays = Math.floor(diffHours / 24);
 
-    let left = "";
+    let left;
 
     if (diffDays > 0) {
         left = `${diffDays} day${diffDays > 1 ? "s" : ""}`;
