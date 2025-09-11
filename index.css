@@ -1,1 +1,29 @@
 @import "tailwindcss";
+@import "flowbite/src/themes/default";
+
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
+@theme {
+    --color-primary: #EA439C;
+    --color-primary-100: #FEE4EC;
+    --color-primary-200: #FECDD6;
+    --color-primary-300: #FDA4AF;
+    --color-primary-400: #FB7185;
+    --color-primary-500: #EA439C;
+    --color-primary-600: #E11D48;
+    --color-primary-700: #BE123C;
+    --color-primary-800: #9F1239;
+    --color-primary-900: #881337;
+
+    --color-primary-disabled: #FBCFE8;
+    --color-disabled: #9CA3AF;
+    --color-secondary: #3B82F6;
+    /* Tailwind Yellow 500 */
+    --color-upcoming: #eab308;
+    /* Tailwind Green 500 */
+    --color-completed: #22c55e;
+    /* Tailwind Red 500 */
+    --color-cancelled: #ef4444;
+
+}
