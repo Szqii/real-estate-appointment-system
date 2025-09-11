@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-[#EA439C] rounded-2xl text-sm font-medium flex justify-center items-center gap-2 px-2 py-2">
+  <div class="w-full bg-primary rounded-2xl text-sm font-medium flex justify-center items-center gap-2 px-2 py-2">
     <div class="flex-1">
       <div class="bg-[#F9F9F9] text-md flex items-center rounded-full px-4 py-2"
            :class="left ? 'justify-around' : 'justify-center'"
@@ -21,7 +21,7 @@ import formatDate from "@/utils/formatDate.js";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {faClock} from "@fortawesome/free-solid-svg-icons";
 
-const props = defineProps({
+defineProps({
   appointmentDate: String,
   status: String,
   left: [String, Number, null],

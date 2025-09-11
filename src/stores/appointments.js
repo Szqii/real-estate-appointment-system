@@ -23,7 +23,39 @@ export const useAppointmentsStore = defineStore('appointments', () => {
             .sort((a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate))
     )
 
-    const totalAppointments = computed(() => appointments.value.length)
+    const filters = ref({
+        status: 'All Statuses', // All, Upcoming, Completed, Cancelled
+        agentIds: [], // All or specific agent ID
+        dateRange: null, // { from: Date, to: Date } or null
+        search: '' // search term
+    })
+
+    const filteredAppointments = computed(() => {
+        return appointments.value.filter(app => {
+            const statusMatch = !filters.value.status || filters.value.status === 'All Statuses' || app.status === filters.value.status
+            const agentMatch = !filters.value.agentIds.length || app.agents.some(a => filters.value.agentIds.includes(a.id))
+            const dateMatch = !filters.value.dateRange || (
+                new Date(app.appointmentDate) >= new Date(filters.value.dateRange.from) &&
+                new Date(app.appointmentDate) <= new Date(filters.value.dateRange.to)
+            )
+
+            const search = filters.value.search || ""
+            const searchMatch = !search || Object.values(app).some(val => {
+                if (typeof val === "string" || typeof val === "number") {
+                    return val.toString().includes(search)
+                }
+                if (Array.isArray(val)) {
+                    return val.some(item => Object.values(item).some(v => v?.toString().includes(search)))
+                }
+                return false
+            })
+
+
+            return statusMatch && agentMatch && dateMatch && searchMatch
+        })
+    })
+
+    const totalAppointments = computed(() => filteredAppointments.value.length)
     const pageSize = 10
     const totalPages = computed(() => Math.ceil(totalAppointments.value / pageSize))
 
@@ -31,7 +63,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
 
     const paginatedAppointments = computed(() => {
         const start = (currentPage.value - 1) * pageSize
-        return appointments.value.slice(start, start + pageSize)
+        return filteredAppointments.value.slice(start, start + pageSize)
     })
 
     const loading = ref(false)
@@ -72,18 +104,29 @@ export const useAppointmentsStore = defineStore('appointments', () => {
         }
     }
 
+    const setFilter = (key, value) => {
+        filters.value[key] = value
+        setCurrentPage(1) // Reset to first page on filter change
+    }
+
     return {
-        fetchAppointments,
+        // State
         appointments,
+        filteredAppointments,
+        paginatedAppointments,
         totalAppointments,
         totalPages,
-        paginatedAppointments,
         currentPage,
         loading,
         error,
-        setCurrentPage,
+        filters,
+
+        // Actions
+        fetchAppointments,
         setAppointments,
         setLoading,
-        setError
+        setError,
+        setCurrentPage,
+        setFilter
     }
 })
