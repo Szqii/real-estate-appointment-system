@@ -32,8 +32,6 @@ const resetDates = () => {
 }
 
 const format = (dates) => {
-  // dates is like [Date, Date]
-  // return the format like To: DD, MM YYYY HH:mm - From: DD, MM YYYY HH:mm, en-US locale
   if (dates.length !== 2) return ''
   const [from, to] = dates
   const options = {year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit'}
@@ -42,14 +40,4 @@ const format = (dates) => {
 </script>
 
 <style scoped>
-.dp__theme_light {
-  --dp-background-color: transparent;
-  --dp-border-color-focus: var(--color-primary);
-  
-  --dp-font-family: inherit !important;
-  --dp-font-size: var(--text-sm) !important;
-  --dp-border-radius: 0.5rem !important;
-  --dp-input-padding: 0.5rem 30px 0.5rem 12px; /*Padding in the input*/
-
-}
 </style>
