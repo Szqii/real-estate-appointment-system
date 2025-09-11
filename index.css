@@ -25,5 +25,14 @@
     --color-completed: #22c55e;
     /* Tailwind Red 500 */
     --color-cancelled: #ef4444;
+}
 
+.dp__theme_light {
+    --dp-background-color: #F9F9F9;
+    --dp-border-color-focus: var(--color-primary);
+
+    --dp-font-family: inherit !important;
+    --dp-font-size: var(--text-sm) !important;
+    --dp-border-radius: 0.5rem !important;
+    --dp-input-padding: 0.5rem 30px 0.5rem 12px; /*Padding in the input*/
 }
