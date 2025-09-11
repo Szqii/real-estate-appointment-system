@@ -19,7 +19,7 @@ const goToPage = (page) => {
 </script>
 
 <template>
-  <div class="flex justify-end mt-4 gap-2">
+  <div class="flex justify-end mt-4 gap-2 cursor-pointer">
     <button
         class="px-2 py-2 border rounded"
         :disabled="currentPage === 1"
