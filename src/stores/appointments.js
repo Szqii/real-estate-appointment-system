@@ -5,6 +5,7 @@ import compareDateToToday from "@/utils/compareDateToToday.js";
 import {useAgentsStore} from "@/stores/agents.js";
 import normalizeAppointment from "@/utils/normalizeAppointmentData.js";
 import {postAppointment} from "@/services/postAppointment.js";
+import {updateAppointment as updateAppointmentService} from "@/services/updateAppointment.js";
 
 export const useAppointmentsStore = defineStore('appointments', () => {
     const agentsStore = useAgentsStore()
@@ -109,6 +110,19 @@ export const useAppointmentsStore = defineStore('appointments', () => {
         return newAppointment
     }
 
+    const updateAppointment = async (appointmentId, appointmentData) => {
+        const data = await updateAppointmentService(appointmentId, appointmentData)
+        const agentMap = new Map(agentsStore.agents.map(a => [a.id, a]))
+        const updatedAppointment = normalizeAppointment(data, agentMap)
+        
+        // Update the appointment in the store
+        const index = _appointments.value.findIndex(app => app.id === appointmentId)
+        if (index !== -1) {
+            _appointments.value[index] = updatedAppointment
+        }
+        return updatedAppointment
+    }
+
     const setAppointments = (data) => {
         _appointments.value = data
     }
@@ -147,6 +161,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
         // Actions
         fetchAppointments,
         createAppointment,
+        updateAppointment,
         setAppointments,
         setLoading,
         setError,

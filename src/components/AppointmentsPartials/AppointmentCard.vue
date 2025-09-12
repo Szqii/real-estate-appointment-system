@@ -47,7 +47,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import StatusBadge from "@/components/AppointmentsPartials/StatusBadge.vue";
 import AgentAvatar from "@/components/AgentAvatar.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -59,14 +59,12 @@ import {computed} from "vue";
 
 
 // Props
-const props = defineProps<{
-  appointment: {
-    [key: string]: any;
-  };
-}>();
+const props = defineProps({
+  appointment: Object
+});
 
 const store = useAppointmentsStore();
-const highlight = (text: string | undefined) => highlightText(text, store.filters.search);
+const highlight = (text) => highlightText(text, store.filters.search);
 
 // Computed fields
 const highlightContacts = computed(() => props.appointment.contacts.map(c => highlight(c.name)).join(', '))

@@ -48,6 +48,13 @@ import {useAgentsStore} from "@/stores/agents.js"
 import {faCheck, faChevronDown, faTimes} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
+const props = defineProps({
+  initialSelected: {
+    type: Array,
+    default: () => []
+  }
+});
+
 const store = useAgentsStore()
 const agents = store.agents
 
@@ -55,6 +62,15 @@ const selectedAgents = ref([])
 const dropdownOpen = ref(false)
 const wrapper = ref(null)
 const emit = defineEmits(['update:selectedAgents'])
+
+// Initialize selected agents
+watch(() => props.initialSelected, (newInitialSelected) => {
+  if (newInitialSelected && newInitialSelected.length > 0) {
+    selectedAgents.value = agents.filter(agent => 
+      newInitialSelected.includes(agent.id)
+    );
+  }
+}, { immediate: true });
 
 // Check if selected
 const isSelected = (agent) => selectedAgents.value.some(a => a.id === agent.id)

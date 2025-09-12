@@ -48,11 +48,27 @@ import {computed, ref, onMounted, onBeforeUnmount, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
 
+const props = defineProps({
+  initialSelected: {
+    type: Array,
+    default: () => []
+  }
+});
+
 const store = useAppointmentsStore()
 const uniqueContacts = store.uniqueContacts
 const query = ref("")
 const selectedContacts = ref([])
 const emit = defineEmits(['update:selectedContacts'])
+
+// Initialize selected contacts
+watch(() => props.initialSelected, (newInitialSelected) => {
+  if (newInitialSelected && newInitialSelected.length > 0) {
+    selectedContacts.value = uniqueContacts.filter(contact => 
+      newInitialSelected.includes(contact.id)
+    );
+  }
+}, { immediate: true });
 
 // Dropdown open state
 const dropdownOpen = ref(false)

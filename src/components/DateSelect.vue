@@ -11,11 +11,25 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {ref, watch} from "vue"
 
-const date = ref<Date | null>(null)
+const props = defineProps({
+  initialSelected: {
+    type: [String, Date],
+    default: null
+  }
+});
+
+const date = ref(null)
 const emit = defineEmits(['update:selectedDate'])
+
+// Initialize date
+watch(() => props.initialSelected, (newInitialSelected) => {
+  if (newInitialSelected) {
+    date.value = new Date(newInitialSelected);
+  }
+}, { immediate: true });
 
 const resetDates = () => {
   date.value = null
