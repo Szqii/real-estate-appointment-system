@@ -2,8 +2,8 @@
   <div class="w-full">
     <!-- Card Skeleton -->
     <div
-        class="flex items-center justify-between px-6 py-6 border border-gray-300 rounded-xl mb-2 bg-[#F9F9F9] shadow animate-pulse">
-
+      class="flex items-center justify-between px-6 py-6 border border-gray-300 rounded-xl mb-2 bg-[#F9F9F9] shadow animate-pulse"
+    >
       <!-- Contact Skeleton -->
       <div class="flex items-center gap-4">
         <div class="flex flex-col gap-2">
@@ -21,7 +21,6 @@
       <div class="w-64 h-8 bg-gray-300 rounded-full"></div>
       <!-- Initials Skeleton -->
       <div class="flex -space-x-2 items-center justify-center">
-
         <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
         <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
         <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
@@ -30,10 +29,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
-
-<style scoped>
-
-</style>
+<style scoped></style>
