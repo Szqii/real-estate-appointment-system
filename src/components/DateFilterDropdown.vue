@@ -1,5 +1,5 @@
 <template>
-  <div class="w-120 text-sm">
+  <div class="w-full sm:w-120 text-sm">
     <VueDatePicker
       v-model="dates"
       :format="format"
