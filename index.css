@@ -1,38 +1,46 @@
-@import "tailwindcss";
-@import "flowbite/src/themes/default";
+@import 'tailwindcss';
+@import 'flowbite/src/themes/default';
 
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite";
 
-@theme {
-    --color-primary: #EA439C;
-    --color-primary-100: #FEE4EC;
-    --color-primary-200: #FECDD6;
-    --color-primary-300: #FDA4AF;
-    --color-primary-400: #FB7185;
-    --color-primary-500: #EA439C;
-    --color-primary-600: #E11D48;
-    --color-primary-700: #BE123C;
-    --color-primary-800: #9F1239;
-    --color-primary-900: #881337;
+/* Mobile-first responsive improvements */
+@media (max-width: 640px) {
+  .app-container {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  }
+}
 
-    --color-primary-disabled: #FBCFE8;
-    --color-disabled: #9CA3AF;
-    --color-secondary: #3B82F6;
-    /* Tailwind Yellow 500 */
-    --color-upcoming: #eab308;
-    /* Tailwind Green 500 */
-    --color-completed: #22c55e;
-    /* Tailwind Red 500 */
-    --color-cancelled: #ef4444;
+@theme {
+  --color-primary: #ea439c;
+  --color-primary-100: #fee4ec;
+  --color-primary-200: #fecdd6;
+  --color-primary-300: #fda4af;
+  --color-primary-400: #fb7185;
+  --color-primary-500: #ea439c;
+  --color-primary-600: #e11d48;
+  --color-primary-700: #be123c;
+  --color-primary-800: #9f1239;
+  --color-primary-900: #881337;
+
+  --color-primary-disabled: #fbcfe8;
+  --color-disabled: #9ca3af;
+  --color-secondary: #3b82f6;
+  /* Tailwind Yellow 500 */
+  --color-upcoming: #eab308;
+  /* Tailwind Green 500 */
+  --color-completed: #22c55e;
+  /* Tailwind Red 500 */
+  --color-cancelled: #ef4444;
 }
 
 .dp__theme_light {
-    --dp-background-color: #F9F9F9;
-    --dp-border-color-focus: var(--color-primary);
+  --dp-background-color: #f9f9f9;
+  --dp-border-color-focus: var(--color-primary);
 
-    --dp-font-family: inherit !important;
-    --dp-font-size: var(--text-sm) !important;
-    --dp-border-radius: 0.5rem !important;
-    --dp-input-padding: 0.5rem 30px 0.5rem 12px; /*Padding in the input*/
+  --dp-font-family: inherit !important;
+  --dp-font-size: var(--text-sm) !important;
+  --dp-border-radius: 0.5rem !important;
+  --dp-input-padding: 0.5rem 30px 0.5rem 12px; /*Padding in the input*/
 }

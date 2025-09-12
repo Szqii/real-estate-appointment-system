@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-80 group">
+  <div class="relative w-full sm:w-80 group">
     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
       <FontAwesomeIcon
         :icon="faMagnifyingGlass"
