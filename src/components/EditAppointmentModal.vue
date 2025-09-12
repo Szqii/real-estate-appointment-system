@@ -11,7 +11,7 @@
       <div class="relative bg-white rounded-lg shadow-sm">
         <!-- Modal header -->
         <div
-            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200"
+            class="flex items-center justify-between p-4 border-b rounded-t border-gray-200"
         >
           <h3 class="text-lg font-semibold text-gray-900">Edit Appointment</h3>
           <button
@@ -25,7 +25,7 @@
         </div>
 
         <!-- Modal body -->
-        <form class="p-4 md:p-5" @submit.prevent="updateAppointment">
+        <form class="p-4" @submit.prevent="updateAppointment">
           <div class="grid gap-4 mb-4">
             <!-- Contact Selection -->
             <div class="col-span-2">

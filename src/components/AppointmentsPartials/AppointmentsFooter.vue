@@ -1,73 +1,51 @@
 <script setup>
-import { computed } from 'vue'
-import { useAppointmentsStore } from '@/stores/appointments.js'
-import { usePagination } from '@/composables/usePagination'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import {computed} from 'vue'
+import {useAppointmentsStore} from '@/stores/appointments.js'
+import {usePagination} from '@/composables/usePagination'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+import {faChevronLeft, faChevronRight} from '@fortawesome/free-solid-svg-icons'
 
 const store = useAppointmentsStore()
 
 const totalPages = computed(() => store.totalPages)
 const currentPage = computed(() => store.currentPage)
 
-const { paginationRange } = usePagination(totalPages, currentPage)
+const {paginationRange} = usePagination(totalPages, currentPage)
 
 const goToPage = (page) => {
   store.setCurrentPage(page)
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  window.scrollTo({top: 0, behavior: 'smooth'})
 }
 </script>
 
 <template>
   <div class="flex flex-col sm:flex-row justify-center sm:justify-end items-center mt-6 gap-4">
-    <!-- Mobile: Compact pagination -->
-    <div class="flex sm:hidden items-center gap-2">
+    <div class="flex justify-end gap-2 cursor-pointer">
       <button
-        class="px-3 py-2 border rounded-lg bg-white disabled:opacity-50"
-        :disabled="currentPage === 1"
-        @click="goToPage(currentPage - 1)"
+          class="px-2 py-2 border rounded"
+          :disabled="currentPage === 1"
+          @click="goToPage(currentPage - 1)"
       >
-        <FontAwesomeIcon :icon="faChevronLeft" class="text-xs" />
-      </button>
-
-      <span class="px-4 py-2 text-sm font-medium"> {{ currentPage }} / {{ totalPages }} </span>
-
-      <button
-        class="px-3 py-2 border rounded-lg bg-white disabled:opacity-50"
-        :disabled="currentPage === totalPages"
-        @click="goToPage(currentPage + 1)"
-      >
-        <FontAwesomeIcon :icon="faChevronRight" class="text-xs" />
-      </button>
-    </div>
-
-    <!-- Desktop: Full pagination -->
-    <div class="hidden sm:flex justify-end gap-2 cursor-pointer">
-      <button
-        class="px-2 py-2 border rounded"
-        :disabled="currentPage === 1"
-        @click="goToPage(currentPage - 1)"
-      >
-        <FontAwesomeIcon :icon="faChevronLeft" class="text-xs" />
+        <FontAwesomeIcon :icon="faChevronLeft" class="text-xs"/>
       </button>
 
       <button
-        v-for="(page, idx) in paginationRange"
-        :key="idx"
-        class="px-2 py-2 border rounded"
-        :class="page === currentPage ? 'bg-white text-blue-500 border-blue-500' : ''"
-        :disabled="page === '...'"
-        @click="page !== '...' && goToPage(page)"
+          v-for="(page, idx) in paginationRange"
+          :key="idx"
+          class="px-2 py-2 border rounded"
+          :class="page === currentPage ? 'bg-white text-blue-500 border-blue-500' : ''"
+          :disabled="page === '...'"
+          @click="page !== '...' && goToPage(page)"
       >
         {{ page }}
       </button>
 
       <button
-        class="px-2 py-2 border rounded"
-        :disabled="currentPage === totalPages"
-        @click="goToPage(currentPage + 1)"
+          class="px-2 py-2 border rounded"
+          :disabled="currentPage === totalPages"
+          @click="goToPage(currentPage + 1)"
       >
-        <FontAwesomeIcon :icon="faChevronRight" class="text-xs" />
+        <FontAwesomeIcon :icon="faChevronRight" class="text-xs"/>
       </button>
     </div>
   </div>
