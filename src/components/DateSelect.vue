@@ -1,48 +1,38 @@
 <template>
   <div class="w-full text-sm">
     <VueDatePicker
-      v-model="date"
-      format="dd/MM/yyyy HH:mm"
-      auto-apply
-      placeholder="Select date"
-      @cleared="resetDates"
-      required
+        v-model="internalDate"
+        format="dd/MM/yyyy HH:mm"
+        auto-apply
+        placeholder="Select date"
+        @cleared="resetDate"
+        required
     />
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import {ref, computed, watch} from 'vue'
 
 const props = defineProps({
-  initialSelected: {
+  modelValue: {
     type: [String, Date],
     default: null,
   },
 })
 
-const date = ref(null)
-const emit = defineEmits(['update:selectedDate'])
+const emit = defineEmits(['update:modelValue'])
 
-// Initialize date
-watch(
-  () => props.initialSelected,
-  (newInitialSelected) => {
-    if (newInitialSelected) {
-      date.value = new Date(newInitialSelected)
-    }
-  },
-  { immediate: true },
-)
-
-const resetDates = () => {
-  date.value = null
-}
-
-watch(date, (newDate) => {
-  console.log('date', newDate, typeof newDate)
-  emit('update:selectedDate', newDate)
+// Local state synced with v-model
+const internalDate = computed({
+  get: () => props.modelValue ? new Date(props.modelValue) : null,
+  set: (val) => emit('update:modelValue', val),
 })
+
+// Clear date
+const resetDate = () => {
+  internalDate.value = null
+}
 </script>
 
 <style scoped></style>
