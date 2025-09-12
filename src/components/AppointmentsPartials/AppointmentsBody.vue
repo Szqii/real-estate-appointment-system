@@ -15,40 +15,39 @@
           Create Appointment
         </button>
         <CreateAppointmentModal :isModalOpen="isModalOpen" @close="closeModal"/>
+        <EditAppointmentModal :isModalOpen="isEditModalOpen" :appointment="selectedAppointment" @close="closeEditModal"/>
 
       </div>
       <div>
         <div v-for="appointment in appointments" :key="appointment.id"
-             class="flex justify-between items-center px-6 py-2 border border-gray-300 rounded-xl mb-2 odd:bg-[#EDF0F5] even:bg-[#F9F9F9]">
+             @click="openEditModal(appointment)"
+             class="flex justify-between items-center px-6 py-2 border border-gray-300 rounded-xl mb-2 odd:bg-[#EDF0F5] even:bg-[#F9F9F9] cursor-pointer hover:shadow-md transition-shadow duration-200">
           <AppointmentCard :appointment="appointment"/>
         </div>
       </div>
     </div>
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 import Loading from "@/components/Loading.vue";
 import AppointmentCard from "@/components/AppointmentsPartials/AppointmentCard.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {faCalendarPlus} from "@fortawesome/free-solid-svg-icons";
 import {useAppointmentsStore} from "@/stores/appointments.js";
 import CreateAppointmentModal from "@/components/CreateAppointmentModal.vue";
+import EditAppointmentModal from "@/components/EditAppointmentModal.vue";
 import {ref} from "vue";
 
-interface Appointment {
-  id: number;
-
-  [key: string]: any; // Other appointment properties
-}
-
-defineProps<{
-  appointments: Appointment[];
-  appointmentsLength: number;
-  loading: boolean;
-  error: string | null;
-}>();
+defineProps({
+  appointments: Array,
+  appointmentsLength: Number,
+  loading: Boolean,
+  error: String
+});
 
 const isModalOpen = ref(false);
+const isEditModalOpen = ref(false);
+const selectedAppointment = ref(null);
 
 const store = useAppointmentsStore();
 
@@ -62,5 +61,15 @@ const closeModal = () => {
   if (isModalOpen.value) {
     isModalOpen.value = false;
   }
+}
+
+const openEditModal = (appointment) => {
+  selectedAppointment.value = appointment;
+  isEditModalOpen.value = true;
+}
+
+const closeEditModal = () => {
+  isEditModalOpen.value = false;
+  selectedAppointment.value = null;
 }
 </script>
