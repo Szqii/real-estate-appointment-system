@@ -4,11 +4,14 @@
   >
     <div class="flex-1">
       <div
-        class="bg-[#F9F9F9] text-md flex items-center rounded-full px-4 py-2"
-        :class="left ? 'justify-around' : 'justify-center'"
+        class="bg-[#F9F9F9] text-md rounded-full px-4 py-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1"
       >
-        <span class="font-bold" :class="statusColors[status] || 'text-gray-800'">{{ status }}</span>
-        <span v-if="left"> {{ left }}</span>
+        <span
+          class="font-bold whitespace-nowrap"
+          :class="statusColors[status] || 'text-gray-800'"
+          >{{ status }}</span
+        >
+        <span v-if="left" class="text-sm whitespace-nowrap">{{ left }}</span>
       </div>
     </div>
 

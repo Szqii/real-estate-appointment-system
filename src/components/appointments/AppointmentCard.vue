@@ -37,54 +37,70 @@
     </div>
 
     <!-- Agents Section -->
-    <div class="flex md:flex-1 -space-x-2 items-center justify-start md:justify-center relative">
-      <AgentAvatar
-        v-for="(agent, index) in appointment.agents.slice(0, agentLimit)"
-        :key="index"
-        :name="agent.name"
-        :bg-color="agent.color"
-        :class="avatarSize"
-      />
-      <div v-if="appointment.agents.length > agentLimit" class="relative">
+    <div
+      class="flex md:flex-1 -space-x-2 items-center justify-start md:justify-center relative overflow-x-auto md:overflow-visible pb-2 md:pb-0"
+    >
+      <!-- Mobile: Show all agents with horizontal scroll -->
+      <template v-if="isMobile">
         <AgentAvatar
-          ref="agentPopoverTrigger"
-          :name="appointment.agents.length - agentLimit"
-          :class="[avatarSize, 'cursor-pointer']"
-          @click.stop="toggleAgentPopover"
+          v-for="(agent, index) in appointment.agents"
+          :key="index"
+          :name="agent.name"
+          :bg-color="agent.color"
+          :class="[avatarSize, 'flex-shrink-0']"
         />
+      </template>
 
-        <!-- Agent Popover -->
-        <div
-          v-if="isAgentPopoverOpen"
-          class="absolute top-full right-0 mt-2 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 min-w-[280px] max-w-[320px]"
-          @click.stop
-        >
-          <!-- Popover Header -->
-          <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-100">
-            <h3 class="text-sm font-medium text-gray-900">All Agents</h3>
-            <button
-              @click="closeAgentPopover"
-              class="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <FontAwesomeIcon :icon="faTimes" class="w-4 h-4" />
-            </button>
-          </div>
+      <!-- Desktop: Show limited agents with popover -->
+      <template v-else>
+        <AgentAvatar
+          v-for="(agent, index) in appointment.agents.slice(0, agentLimit)"
+          :key="index"
+          :name="agent.name"
+          :bg-color="agent.color"
+          :class="avatarSize"
+        />
+        <div v-if="appointment.agents.length > agentLimit" class="relative">
+          <AgentAvatar
+            ref="agentPopoverTrigger"
+            :name="appointment.agents.length - agentLimit"
+            :class="[avatarSize, 'cursor-pointer']"
+            @click.stop="toggleAgentPopover"
+          />
 
-          <!-- All Agents Grid -->
-          <div class="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto">
-            <div
-              v-for="(agent, index) in appointment.agents"
-              :key="index"
-              class="flex flex-col items-center gap-1 p-2 rounded-lg"
-            >
-              <AgentAvatar :name="agent.name" :bg-color="agent.color" size="sm" />
-              <span class="text-xs text-gray-600 text-center leading-tight break-words">
-                {{ agent.name }}
-              </span>
+          <!-- Agent Popover -->
+          <div
+            v-if="isAgentPopoverOpen"
+            class="absolute top-full right-0 mt-2 z-50 bg-white rounded-lg shadow-lg border border-gray-200 p-4 min-w-[280px] max-w-[320px]"
+            @click.stop
+          >
+            <!-- Popover Header -->
+            <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-100">
+              <h3 class="text-sm font-medium text-gray-900">All Agents</h3>
+              <button
+                @click="closeAgentPopover"
+                class="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <FontAwesomeIcon :icon="faTimes" class="w-4 h-4" />
+              </button>
+            </div>
+
+            <!-- All Agents Grid -->
+            <div class="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto">
+              <div
+                v-for="(agent, index) in appointment.agents"
+                :key="index"
+                class="flex flex-col items-center gap-1 p-2 rounded-lg"
+              >
+                <AgentAvatar :name="agent.name" :bg-color="agent.color" size="sm" />
+                <span class="text-xs text-gray-600 text-center leading-tight break-words">
+                  {{ agent.name }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -105,6 +121,17 @@ import { highlightText } from '@/utils'
 
 import { useAppointmentsStore } from '@/stores/appointments.js'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
+
+// Mobile detection
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 768 // md breakpoint
+}
+
+const handleResize = () => {
+  checkMobile()
+}
 
 // Props
 const props = defineProps({
@@ -163,12 +190,15 @@ const handleEscapeKey = (event) => {
 }
 
 onMounted(() => {
+  checkMobile()
   document.addEventListener('click', handleClickOutside)
   document.addEventListener('keydown', handleEscapeKey)
+  window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
   document.removeEventListener('keydown', handleEscapeKey)
+  window.removeEventListener('resize', handleResize)
 })
 </script>

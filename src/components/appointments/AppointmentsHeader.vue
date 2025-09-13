@@ -6,38 +6,59 @@
     <div class="flex flex-col lg:flex-row gap-4 lg:gap-6 lg:items-center order-2 lg:order-1">
       <!-- Agents -->
       <div
-        class="flex -space-x-2 items-center justify-start overflow-x-auto lg:overflow-visible pb-2 lg:pb-0"
+        class="flex -space-x-2 items-center justify-start overflow-x-auto lg:overflow-visible py-2 px-1 lg:pb-0"
       >
-        <div
-          v-for="agent in prioritizedAgents.slice(0, agentLimit)"
-          :key="agent.id"
-          @click="toggleAgentSelection(agent.id)"
-        >
-          <AgentAvatar
-            :name="`${agent.fields.agent_name} ${agent.fields.agent_surname}`"
-            :bgColor="agent.fields.color"
-            :class="[
-              'cursor-pointer transition flex-shrink-0',
-              selectedAgents.includes(agent.id) ? 'ring-2 ring-primary' : '',
-            ]"
-          />
-        </div>
-        <div v-if="prioritizedAgents.length > agentLimit" class="relative flex-shrink-0">
-          <AgentAvatar
-            ref="popoverTrigger"
-            :name="prioritizedAgents.length - agentLimit"
-            class="cursor-pointer"
-            @click="openPopover"
-          />
+        <!-- Mobile: Show all agents with horizontal scroll -->
+        <template v-if="isMobile">
+          <div
+            v-for="agent in prioritizedAgents"
+            :key="agent.id"
+            @click="toggleAgentSelection(agent.id)"
+          >
+            <AgentAvatar
+              :name="`${agent.fields.agent_name} ${agent.fields.agent_surname}`"
+              :bgColor="agent.fields.color"
+              :class="[
+                'cursor-pointer transition flex-shrink-0',
+                selectedAgents.includes(agent.id) ? 'ring-2 ring-primary' : '',
+              ]"
+            />
+          </div>
+        </template>
 
-          <AgentPopover
-            :isOpen="isPopoverOpen"
-            :agents="prioritizedAgents"
-            :selectedAgents="selectedAgents"
-            @close="closePopover"
-            @agentClick="toggleAgentSelection"
-          />
-        </div>
+        <!-- Desktop: Show limited agents with popover -->
+        <template v-else>
+          <div
+            v-for="agent in prioritizedAgents.slice(0, agentLimit)"
+            :key="agent.id"
+            @click="toggleAgentSelection(agent.id)"
+          >
+            <AgentAvatar
+              :name="`${agent.fields.agent_name} ${agent.fields.agent_surname}`"
+              :bgColor="agent.fields.color"
+              :class="[
+                'cursor-pointer transition flex-shrink-0',
+                selectedAgents.includes(agent.id) ? 'ring-2 ring-primary' : '',
+              ]"
+            />
+          </div>
+          <div v-if="prioritizedAgents.length > agentLimit" class="relative flex-shrink-0">
+            <AgentAvatar
+              ref="popoverTrigger"
+              :name="prioritizedAgents.length - agentLimit"
+              class="cursor-pointer"
+              @click="openPopover"
+            />
+
+            <AgentPopover
+              :isOpen="isPopoverOpen"
+              :agents="prioritizedAgents"
+              :selectedAgents="selectedAgents"
+              @close="closePopover"
+              @agentClick="toggleAgentSelection"
+            />
+          </div>
+        </template>
       </div>
 
       <!-- Filters -->
@@ -60,6 +81,17 @@ import { StatusDropdown, DateFilterDropdown } from '@/components/filters'
 import { SearchInput } from '@/components/ui'
 import { useAppointmentsStore } from '@/stores/appointments.js'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
+
+// Mobile detection composable
+const isMobile = ref(false)
+
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 1024 // lg breakpoint
+}
+
+const handleResize = () => {
+  checkMobile()
+}
 
 const props = defineProps({
   agents: {
@@ -119,13 +151,16 @@ const handleEscapeKey = (event) => {
 }
 
 onMounted(() => {
+  checkMobile()
   document.addEventListener('click', handleClickOutside)
   document.addEventListener('keydown', handleEscapeKey)
+  window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
   document.removeEventListener('keydown', handleEscapeKey)
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
