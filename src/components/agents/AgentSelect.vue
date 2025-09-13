@@ -16,7 +16,7 @@
     <!-- Dropdown list -->
     <ul
       v-if="dropdownOpen"
-      class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+      class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto custom-scrollbar"
     >
       <li
         v-for="agent in agents"
