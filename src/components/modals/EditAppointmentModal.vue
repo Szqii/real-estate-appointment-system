@@ -6,7 +6,7 @@
     :aria-hidden="!isModalOpen"
     class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50"
   >
-    <div class="relative p-2 sm:p-4 w-full max-w-xl max-h-[90vh] sm:max-h-[80vh] mx-2 sm:mx-4">
+    <div class="relative p-2 sm:p-4 w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] mx-2 sm:mx-4">
       <!-- Modal content -->
       <div class="relative bg-white rounded-lg shadow-sm">
         <!-- Modal header -->
@@ -24,7 +24,10 @@
           </button>
         </div>
         <!-- Modal body -->
-        <form class="p-3 sm:p-4" @submit.prevent="updateAppointment">
+        <form
+          class="p-3 sm:p-4 max-h-[calc(95vh-8rem)] overflow-y-auto custom-scrollbar"
+          @submit.prevent="updateAppointment"
+        >
           <div class="grid gap-4 mb-4 sm:grid-cols-2">
             <div class="col-span-2">
               <label class="block mb-2 text-sm font-medium text-gray-900">Contact *</label>
@@ -106,6 +109,12 @@
               Cancel
             </button>
           </div>
+
+          <!-- Related Appointments Section -->
+          <RelatedAppointments
+            :contact-ids="contactIds"
+            :current-appointment-id="appointment?.id"
+          />
         </form>
       </div>
     </div>
@@ -116,6 +125,7 @@
 import { ref, watch } from 'vue'
 import { ContactMultiSelect, DateSelect } from '@/components/forms'
 import { AgentSelect } from '@/components/agents'
+import { RelatedAppointments } from '@/components/appointments'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faSave, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useAppointmentsStore } from '@/stores/appointments.js'
