@@ -18,15 +18,16 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useAppointmentsStore } from '@/stores/appointments.js'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
 const store = useAppointmentsStore()
-const searchQuery = ref('')
 
-watch(searchQuery, (val) => {
-  store.setFilter('search', val)
+// Use computed for two-way binding with the store
+const searchQuery = computed({
+  get: () => store.filters.search,
+  set: (val) => store.setFilter('search', val),
 })
 </script>

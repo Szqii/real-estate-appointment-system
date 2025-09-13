@@ -14,8 +14,10 @@ Experience the application in action with our hosted demo on Netlify.
 - **Agent Management**: Assign multiple agents to appointments
 - **Contact Management**: Multi-select contact assignment
 - **Advanced Filtering**: Filter by status, date range, and agents
-- **Search Functionality**: Real-time search across appointments
+- **Search Functionality**: Real-time search across appointments with reactive filter clearing
+- **Smart Empty States**: Context-aware empty states with clear filter/search actions
 - **Responsive Design**: Mobile-first responsive interface
+- **Real-time UI Updates**: Reactive components that sync with store state changes
 
 ## 🛠️ Tech Stack
 
@@ -95,10 +97,11 @@ src/
 ├── components/            # Feature-organized components
 │   ├── agents/           # Agent-related components
 │   ├── appointments/     # Appointment components
+│   ├── contacts/         # Contact-related components
 │   ├── filters/          # Filter components
 │   ├── forms/            # Form components
 │   ├── modals/           # Modal components
-│   └── ui/               # Generic UI components
+│   └── ui/               # Generic UI components (EmptyState, SearchInput, etc.)
 ├── config/               # Application configuration
 ├── constants/            # Application constants
 ├── layouts/              # Layout components

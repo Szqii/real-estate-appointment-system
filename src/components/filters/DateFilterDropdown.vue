@@ -12,19 +12,25 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useAppointmentsStore } from '@/stores/appointments.js'
 
 const store = useAppointmentsStore()
 
-const dates = ref([])
-watch(dates, (newDate) => {
-  if (newDate.length === 2) {
-    const [from, to] = newDate
-    store.setFilter('dateRange', { from, to })
-  } else {
-    store.setFilter('dateRange', null)
-  }
+// Use computed for two-way binding with the store
+const dates = computed({
+  get: () => {
+    const dateRange = store.filters.dateRange
+    return dateRange ? [dateRange.from, dateRange.to] : []
+  },
+  set: (newDate) => {
+    if (newDate && newDate.length === 2) {
+      const [from, to] = newDate
+      store.setFilter('dateRange', { from, to })
+    } else {
+      store.setFilter('dateRange', null)
+    }
+  },
 })
 
 const resetDates = () => {

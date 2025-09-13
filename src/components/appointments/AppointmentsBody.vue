@@ -4,6 +4,38 @@
     <div v-else-if="error" class="error-message">
       <p>Error loading appointments: {{ error }}</p>
     </div>
+    <div v-else-if="appointments.length === 0" class="mt-8">
+      <!-- Show different empty states based on whether filters are active -->
+      <EmptyState
+        v-if="hasActiveFilters"
+        type="filter"
+        title="No appointments match your filters"
+        description="Try adjusting your search criteria, date range, status, or agent filters to find what you're looking for."
+        action-text="Clear All Filters"
+        @action="clearAllFilters"
+        secondary-action-text="Create New Appointment"
+        :show-secondary-action="true"
+        @secondary-action="openModal"
+      />
+      <EmptyState
+        v-else-if="hasSearchQuery"
+        type="search"
+        title="No appointments found"
+        description="We couldn't find any appointments matching your search. Try different keywords or browse all appointments."
+        action-text="Clear Search"
+        @action="clearSearch"
+        secondary-action-text="Create New Appointment"
+        :show-secondary-action="true"
+        @secondary-action="openModal"
+      />
+      <EmptyState v-else type="appointments" @action="openModal" />
+      <CreateAppointmentModal :isModalOpen="isModalOpen" @close="closeModal" />
+      <EditAppointmentModal
+        :isModalOpen="isEditModalOpen"
+        :appointment="selectedAppointment"
+        @close="closeEditModal"
+      />
+    </div>
     <div v-else class="flex flex-col gap-8">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <span class="font-bold text-sm sm:text-base"
@@ -39,13 +71,15 @@
   </div>
 </template>
 <script setup>
-import { LoadingSpinner } from '@/components/ui'
+import { LoadingSpinner, EmptyState } from '@/components/ui'
 import AppointmentCard from './AppointmentCard.vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCalendarPlus } from '@fortawesome/free-solid-svg-icons'
 
 import { CreateAppointmentModal, EditAppointmentModal } from '@/components/modals'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useAppointmentsStore } from '@/stores/appointments'
+import { APPOINTMENT_STATUS } from '@/constants'
 
 defineProps({
   appointments: {
@@ -66,9 +100,25 @@ defineProps({
   },
 })
 
+const appointmentsStore = useAppointmentsStore()
+
 const isModalOpen = ref(false)
 const isEditModalOpen = ref(false)
 const selectedAppointment = ref(null)
+
+// Computed properties to detect active filters
+const hasActiveFilters = computed(() => {
+  const filters = appointmentsStore.filters
+  return (
+    (filters.status && filters.status !== APPOINTMENT_STATUS.ALL) ||
+    (filters.agentIds && filters.agentIds.length > 0) ||
+    (filters.dateRange && filters.dateRange !== null)
+  )
+})
+
+const hasSearchQuery = computed(() => {
+  return appointmentsStore.filters.search && appointmentsStore.filters.search.trim().length > 0
+})
 
 const openModal = () => {
   if (!isModalOpen.value) {
@@ -90,5 +140,18 @@ const openEditModal = (appointment) => {
 const closeEditModal = () => {
   isEditModalOpen.value = false
   selectedAppointment.value = null
+}
+
+// Methods to clear filters and search
+const clearAllFilters = () => {
+  appointmentsStore.setFilter('status', APPOINTMENT_STATUS.ALL)
+  appointmentsStore.setFilter('agentIds', [])
+  appointmentsStore.setFilter('dateRange', null)
+  appointmentsStore.setFilter('search', '')
+}
+
+const clearSearch = () => {
+  appointmentsStore.setFilter('search', '')
+  appointmentsStore.setFilter('dateRange', null)
 }
 </script>
