@@ -1,5 +1,5 @@
 <script setup>
-import DefaultLayout from '@/layout/DefaultLayout.vue'
+import { AppLayout } from '@/layouts'
 import { useAppointmentsStore } from '@/stores/appointments.js'
 import { useAgentsStore } from '@/stores/agents.js'
 import { onMounted } from 'vue'
@@ -16,7 +16,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <DefaultLayout class="bg-[#F9F9F9]" />
+  <AppLayout class="bg-[#F9F9F9]" />
 </template>
 
 <style scoped></style>
