@@ -1,6 +1,6 @@
 {
-  "name": "iceberg-digital-fe-task",
-  "version": "0.0.0",
+  "name": "real-estate-appointment-manager",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -10,7 +10,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "lint": "prettier --check src/",
+    "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.0.1",

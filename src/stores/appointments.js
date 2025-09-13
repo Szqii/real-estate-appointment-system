@@ -1,11 +1,10 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { getAppointments } from '@/services/getAppointments.js'
-import compareDateToToday from '@/utils/compareDateToToday.js'
+import { AppointmentService } from '@/api/services'
+import { compareDateToToday, normalizeAppointment } from '@/utils'
+import { APPOINTMENT_STATUS } from '@/constants'
+import { config } from '@/config'
 import { useAgentsStore } from '@/stores/agents.js'
-import normalizeAppointment from '@/utils/normalizeAppointmentData.js'
-import { postAppointment } from '@/services/postAppointment.js'
-import { updateAppointment as updateAppointmentService } from '@/services/updateAppointment.js'
 
 export const useAppointmentsStore = defineStore('appointments', () => {
   const agentsStore = useAgentsStore()
@@ -26,7 +25,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   )
 
   const filters = ref({
-    status: 'All Statuses', // All, Upcoming, Completed, Cancelled
+    status: APPOINTMENT_STATUS.ALL,
     agentIds: [], // All or specific agent ID
     dateRange: null, // { from: Date, to: Date } or null
     search: '', // search term
@@ -36,7 +35,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     return appointments.value.filter((app) => {
       const statusMatch =
         !filters.value.status ||
-        filters.value.status === 'All Statuses' ||
+        filters.value.status === APPOINTMENT_STATUS.ALL ||
         app.status === filters.value.status
       const agentMatch =
         !filters.value.agentIds.length ||
@@ -74,7 +73,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
   })
 
   const totalAppointments = computed(() => filteredAppointments.value.length)
-  const pageSize = 10
+  const pageSize = config.pagination.defaultPageSize
   const totalPages = computed(() => Math.ceil(totalAppointments.value / pageSize))
 
   const currentPage = ref(1)
@@ -92,7 +91,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     setError(null)
     try {
       const agentMap = new Map(agentsStore.agents.map((a) => [a.id, a]))
-      const data = await getAppointments()
+      const data = await AppointmentService.getAppointments()
 
       const normalizedData = data.map((app) => normalizeAppointment(app, agentMap))
 
@@ -107,14 +106,14 @@ export const useAppointmentsStore = defineStore('appointments', () => {
 
   const createAppointment = async (appointmentData) => {
     const agentMap = new Map(agentsStore.agents.map((a) => [a.id, a]))
-    const data = await postAppointment(appointmentData)
+    const data = await AppointmentService.createAppointment(appointmentData)
     const newAppointment = normalizeAppointment(data.records[0], agentMap)
     setAppointments([newAppointment, ..._appointments.value])
     return newAppointment
   }
 
   const updateAppointment = async (appointmentId, appointmentData) => {
-    const data = await updateAppointmentService(appointmentId, appointmentData)
+    const data = await AppointmentService.updateAppointment(appointmentId, appointmentData)
     const agentMap = new Map(agentsStore.agents.map((a) => [a.id, a]))
     const updatedAppointment = normalizeAppointment(data, agentMap)
 

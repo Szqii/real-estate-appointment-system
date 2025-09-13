@@ -1,13 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Appointments from '@/pages/Appointments.vue'
+import AppointmentsView from '@/views/AppointmentsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       name: 'appointments',
-      component: Appointments,
+      component: AppointmentsView,
       path: '/',
+      meta: {
+        title: 'Appointments',
+      },
     },
   ],
 })
