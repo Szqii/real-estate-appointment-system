@@ -2,6 +2,12 @@
 
 A modern Vue 3 application for managing real estate appointments with agents and clients.
 
+## 🌐 Live Demo
+
+**[View Live Demo](https://real-estate-appointment-system.netlify.app/)**
+
+Experience the application in action with our hosted demo on Netlify.
+
 ## 🚀 Features
 
 - **Appointment Management**: Create, edit, and view real estate appointments
