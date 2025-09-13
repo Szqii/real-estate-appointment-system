@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { AppointmentService } from '@/api/services'
-import { compareDateToToday, normalizeAppointment } from '@/utils'
+import { compareDateToToday, normalizeAppointment, showToast, toastMessages } from '@/utils'
 import { APPOINTMENT_STATUS } from '@/constants'
 import { config } from '@/config'
 import { useAgentsStore } from '@/stores/agents.js'
@@ -98,31 +98,64 @@ export const useAppointmentsStore = defineStore('appointments', () => {
       setCurrentPage(1)
       setAppointments(normalizedData)
     } catch (err) {
-      setError(err.message || 'Failed to fetch appointments')
+      const errorMessage = err.message || 'Failed to fetch appointments'
+      setError(errorMessage)
+      showToast.error(errorMessage)
     } finally {
       setLoading(false)
     }
   }
 
   const createAppointment = async (appointmentData) => {
-    const agentMap = new Map(agentsStore.agents.map((a) => [a.id, a]))
-    const data = await AppointmentService.createAppointment(appointmentData)
-    const newAppointment = normalizeAppointment(data.records[0], agentMap)
-    setAppointments([newAppointment, ..._appointments.value])
-    return newAppointment
+    try {
+      const agentMap = new Map(agentsStore.agents.map((a) => [a.id, a]))
+      const data = await AppointmentService.createAppointment(appointmentData)
+      const newAppointment = normalizeAppointment(data.records[0], agentMap)
+      setAppointments([newAppointment, ..._appointments.value])
+      showToast.success(toastMessages.appointment.created)
+      return newAppointment
+    } catch (err) {
+      const errorMessage = err.message || toastMessages.appointment.createError
+      showToast.error(errorMessage)
+      throw err
+    }
   }
 
   const updateAppointment = async (appointmentId, appointmentData) => {
-    const data = await AppointmentService.updateAppointment(appointmentId, appointmentData)
-    const agentMap = new Map(agentsStore.agents.map((a) => [a.id, a]))
-    const updatedAppointment = normalizeAppointment(data, agentMap)
+    try {
+      const data = await AppointmentService.updateAppointment(appointmentId, appointmentData)
+      const agentMap = new Map(agentsStore.agents.map((a) => [a.id, a]))
+      const updatedAppointment = normalizeAppointment(data, agentMap)
 
-    // Update the appointment in the store
-    const index = _appointments.value.findIndex((app) => app.id === appointmentId)
-    if (index !== -1) {
-      _appointments.value[index] = updatedAppointment
+      // Update the appointment in the store
+      const index = _appointments.value.findIndex((app) => app.id === appointmentId)
+      if (index !== -1) {
+        _appointments.value[index] = updatedAppointment
+      }
+      showToast.success(toastMessages.appointment.updated)
+      return updatedAppointment
+    } catch (err) {
+      const errorMessage = err.message || toastMessages.appointment.updateError
+      showToast.error(errorMessage)
+      throw err
     }
-    return updatedAppointment
+  }
+
+  const deleteAppointment = async (appointmentId) => {
+    try {
+      await AppointmentService.deleteAppointment(appointmentId)
+
+      // Remove the appointment from the store
+      const index = _appointments.value.findIndex((app) => app.id === appointmentId)
+      if (index !== -1) {
+        _appointments.value.splice(index, 1)
+      }
+      showToast.success(toastMessages.appointment.deleted)
+    } catch (err) {
+      const errorMessage = err.message || toastMessages.appointment.deleteError
+      showToast.error(errorMessage)
+      throw err
+    }
   }
 
   const setAppointments = (data) => {
@@ -164,6 +197,7 @@ export const useAppointmentsStore = defineStore('appointments', () => {
     fetchAppointments,
     createAppointment,
     updateAppointment,
+    deleteAppointment,
     setAppointments,
     setLoading,
     setError,

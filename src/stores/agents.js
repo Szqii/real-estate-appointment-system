@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { AgentService } from '@/api/services'
+import { showToast } from '@/utils'
 
 export const useAgentsStore = defineStore('agents', () => {
   const agents = ref([]) // Private state
@@ -14,7 +15,9 @@ export const useAgentsStore = defineStore('agents', () => {
       const data = await AgentService.getAgents()
       setAgents(data)
     } catch (err) {
-      setError(err.message || 'Failed to fetch agents')
+      const errorMessage = err.message || 'Failed to fetch agents'
+      setError(errorMessage)
+      showToast.error(errorMessage)
     } finally {
       setLoading(false)
     }

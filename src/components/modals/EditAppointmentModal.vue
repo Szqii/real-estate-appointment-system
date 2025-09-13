@@ -119,6 +119,7 @@ import { AgentSelect } from '@/components/agents'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faSave, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useAppointmentsStore } from '@/stores/appointments.js'
+import { showToast, toastMessages } from '@/utils'
 
 const props = defineProps({
   isModalOpen: {
@@ -183,6 +184,7 @@ const validateForm = () => {
 
 const updateAppointment = async () => {
   if (!validateForm()) {
+    showToast.warning(toastMessages.appointment.validationError)
     return
   }
 
@@ -199,6 +201,7 @@ const updateAppointment = async () => {
     await store.updateAppointment(props.appointment.id, updateData)
     closeModal()
   } catch (error) {
+    // Error toast is already handled in the store
     errors.value.submit = error.message || 'Failed to update appointment. Please try again.'
   } finally {
     loading.value = false
